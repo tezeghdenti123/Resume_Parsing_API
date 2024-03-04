@@ -7,9 +7,13 @@ from flair.models import SequenceTagger
 from werkzeug.utils import secure_filename
 import nltk
 from nltk.corpus import stopwords
+from Models.Consultant import Consultant
 
 
 class Service:
+    
+        
+        
     def extract_content(file_path):
         cvfile = fitz.open(file_path)
         text=""
@@ -32,7 +36,7 @@ class Service:
         filtered_words = [word for word in words if word.lower() not in stop_words]
         return ' '.join(filtered_words)
 
-    def remove_punctuation_and_special_chars_and_numbers(text):
+    def remove_punctuation_and_special_chars_and_numbers(self,text):
         # Using regular expression to remove all non-alphanumeric characters
         text_without_chars = re.sub(r'[^A-Za-zéàÇ\s]', '', text)
         
@@ -89,13 +93,14 @@ class Service:
         combinedWords=[]
         #print(words)
         #here we will read all the skills from the skillsdataset file and put them in a list
-        skills=[]
+        
         with open('/home/mohamedtez/Desktop/CVAPI/Services/SkillsDataSet', 'r+') as file:
             # Read the entire content of the file
             content = file.read()
-            skillWords=content.split('\n')
+            predefinedSkills=content.split('\n')
             #print(skillWords)
-            
+        
+        predefinedSkills=self.getSkillsFromDataBase()
         #here we will iterate throw out the list of word and make all the possible combinition of two words to capter the combine skill like "react native"
         for i in range(len(lowerwords)-1):
             combinedWords.append(lowerwords[i]+" "+lowerwords[i+1])
@@ -104,8 +109,86 @@ class Service:
         lowerwords=lowerwords+combinedWords
         ##print(words)
         ##here from words we want to extract the skills
+        skills=[]
         for word in lowerwords:
-            if word in skillWords:
+            if word in predefinedSkills:
                 skills.append(word)
 
         return list(set(skills))
+    def getSkillsFromDataBase(self):
+        
+        with open('/home/mohamedtez/Desktop/CVAPI/Services/SkillsDataSet', 'r+') as file:
+            # Read the entire content of the file
+            content = file.read()
+            skillWords=content.split('\n')
+            #print(skillWords)
+        return skillWords
+    
+
+    def ResumeToConsultant(text,tagger):
+        email=Service.extractEmailFromText(text)
+        if(email!=None)and(len(email)>0):
+            email=email[0]
+        phoneNumber=Service.extract_phone_number(text)
+        if(phoneNumber!=None):
+            phoneNumber=phoneNumber[0]
+        linkedIn=Service.extract_linkedin_url(text)
+        if(linkedIn!=None):
+            linkedIn=linkedIn[0]
+        languages=Service.extract_language(text)
+        langList=[]
+        for langue in languages:
+            if(len(langue)!=0):
+                langList.append(langue[0])
+        languages=langList
+        service=Service()
+        skillsList=service.extract_skills(text)
+        name=service.extract_name(text,tagger)
+        consultant=Consultant(name,email ,linkedIn,phoneNumber,languages,skillsList)
+        return consultant
+    
+    def contains_only_alphabetic_and_spaces(self,sentence):
+        return all(char.isalpha() or char == '.' or char.isspace() for char in sentence)
+
+
+    def is_Valid_words(self,text):
+        if(self.contains_only_alphabetic_and_spaces(text)==False):
+            return False
+        stop_words = set(stopwords.words('french'))
+        words = nltk.word_tokenize(text)
+        for word in words:
+            if word.lower() in stop_words:
+                return False
+        
+        return True
+    
+    
+
+
+    def extract_name(self,text,tagger):
+        
+        sentenceList=text.split('\n')
+        listWords=[]
+        for sentence in sentenceList:
+            sentence = ' '.join(sentence.split())
+            if(0<len(sentence.split())<=3)and(self.is_Valid_words(sentence)==True):
+                listWords.append(sentence)
+        print(listWords)
+        name=""
+        if('Docker' in listWords):
+            listWords.remove('Docker')
+        
+        if('French' in listWords):
+            listWords.remove('French')
+        max=0
+        for sentence in listWords:
+            sentence = Sentence(sentence)
+            tagger.predict(sentence)
+            for entity in sentence.get_spans('ner'):
+                if(entity.tag=="PER")and(entity.score>max):
+                    name=entity.text
+                    max=entity.score
+                    print(entity)
+
+        print(name)
+        return name

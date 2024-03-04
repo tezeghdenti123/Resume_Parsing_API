@@ -2,6 +2,12 @@ from flask import Flask,request,jsonify
 from Services.Service import Service
 from Models.Consultant import Consultant
 import os
+from flair.data import Sentence
+from flair.models import SequenceTagger
+from werkzeug.utils import secure_filename
+import nltk
+from nltk.corpus import stopwords
+from Models.Consultant import Consultant
 
 app=Flask(__name__)
 UPLOAD_FOLDER = 'static/files'
@@ -14,6 +20,9 @@ os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 def home():
     return "Home"
 
+tagger = SequenceTagger.load("flair/ner-french")
+nltk.download('stopwords')
+nltk.download('punkt')
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
@@ -34,13 +43,8 @@ def upload_file():
         
         file_path=Service.saveFile(file,app.config['UPLOAD_FOLDER'])
         text=Service.extract_content(file_path)
-        email=Service.extractEmailFromText(text)
-        phoneNumber=Service.extract_phone_number(text)
-        linkedIn=Service.extract_linkedin_url(text)
-        languages=Service.extract_language(text)
-        service=Service()
-        skillsList=service.extract_skills(text)
-        consultant=Consultant("",email ,linkedIn,phoneNumber,languages,skillsList)
+        
+        consultant=Service.ResumeToConsultant(text,tagger)
         return jsonify(consultant.__dict__)
 
     return jsonify({'error': 'Invalid file format. Please upload a PDF file'})

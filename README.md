@@ -19,4 +19,6 @@ This Flask API is designed to extract relevant information from resumes and retu
    pip install Flask python-docx
    pip install spacy
    pip install nltk
-   pip install PyMuPDF
+   pip install flair
+   pip install pdfminer
+   set the path for the file 'SkillDataSet'

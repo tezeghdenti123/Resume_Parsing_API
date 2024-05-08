@@ -1,4 +1,3 @@
-import fitz  # PyMuPDF
 import re
 import os
 import spacy
@@ -8,6 +7,7 @@ from werkzeug.utils import secure_filename
 import nltk
 from nltk.corpus import stopwords
 from Models.Consultant import Consultant
+from pdfminer.high_level import extract_pages,extract_text
 
 
 class Service:
@@ -15,12 +15,14 @@ class Service:
         
         
     def extract_content(file_path):
-        cvfile = fitz.open(file_path)
-        text=""
-        nbPage=cvfile.pageCount
-        for i in range(nbPage):
-            page=cvfile.loadPage(i)
-            text+=page.getText('text')
+        #cvfile = fitz.open(file_path)
+        #text=""
+        #nbPage=cvfile.pageCount
+        text=extract_text(file_path)
+
+        #for i in range(nbPage):
+        #    page=cvfile.loadPage(i)
+        #    text+=page.getText('text')
         return text
     
     def saveFile(file ,upload_folder):
@@ -94,7 +96,7 @@ class Service:
         #print(words)
         #here we will read all the skills from the skillsdataset file and put them in a list
         
-        with open('/home/mohamedtez/Desktop/CVAPI/Services/SkillsDataSet', 'r+') as file:
+        with open('/home/tezeghdentimohamed/Desktop/CVAPI/Services/SkillsDataSet', 'r+') as file:
             # Read the entire content of the file
             content = file.read()
             predefinedSkills=content.split('\n')
@@ -117,7 +119,7 @@ class Service:
         return list(set(skills))
     def getSkillsFromDataBase(self):
         
-        with open('/home/mohamedtez/Desktop/CVAPI/Services/SkillsDataSet', 'r+') as file:
+        with open('/home/tezeghdentimohamed/Desktop/CVAPI/Services/SkillsDataSet', 'r+') as file:
             # Read the entire content of the file
             content = file.read()
             skillWords=content.split('\n')
@@ -144,7 +146,8 @@ class Service:
         service=Service()
         skillsList=service.extract_skills(text)
         name=service.extract_name(text,tagger)
-        consultant=Consultant(name,email ,linkedIn,phoneNumber,languages,skillsList)
+        educationList=service.getListEduOrg(text)
+        consultant=Consultant(name,email ,linkedIn,phoneNumber,languages,skillsList,educationList,[])
         return consultant
     
     def contains_only_alphabetic_and_spaces(self,sentence):
@@ -192,3 +195,91 @@ class Service:
 
         print(name)
         return name
+    
+    def is_empty_or_spaces(self,sentence):
+        return len(sentence.strip()) == 0
+
+    def isdate(self,sentence):
+        pattern1 = re.compile(r'[1][9][0-9][0-9]|[2][0][0-9][0-9]')
+        matches1 = re.findall(pattern1, sentence)
+        return matches1
+    def isdate(self,sentence):
+        pattern1 = re.compile(r'[1][9][0-9][0-9]|[2][0][0-9][0-9]')
+        matches1 = re.findall(pattern1, sentence)
+        return matches1
+
+    def isDiplomat(self,sentence):
+        pattern1 = re.compile(r'BUT[^a-zA-Z]|L2|L1|IUP|DESS|LPIC|Certiﬁcat:|C[eE][rR][tT][iI][fF][iI][cC][aA][tT][^a-zA-Z]|(?:^|[^A-Za-z])Formation[\s](?!et|d[eu]|[cC][lL][iI][eE][nN][tT]|\W*$)|System and Information Technology|PMP|[gG][rR][aA][dD][uU][tT][eE]|1 ère année|Ingénieurie|[Ss]oftware [eE]ngineer|[Cc][Yy][cC][lL][eE][\s][dDiI]|[cC][eE][rR][tT][iI][fF][iI][cC][Aa][Tt][eE]?[^a-zA-Z]|[Pp][rR][Ee][pP][aA][rR][aA][tT][oO][rR][Yy]|[^tT][\s][Pp][rR][eEéÉ][pP][aA][rR][aA][tT][oO][iI][rR]|B[\.\s]?[sS][\.\s]?[Cc][^a-zA-Z]|[pP][\.\s]?[hH][\.\s]?[dD]|[Dd][eE][gG][Rr][Ii][eE]|[Cc][Pp][gG][Ee]|[mM][aA][iIî][tT][rR][iI][sS][eE][\s][^dD]|[Bb][tT][sS]|[lL][iI][cC][eE][Nn][cCsS][eE]|MS[cC]|(?:^|[^A-Za-z])[mM][aA][sS][tT][eEèÈ][rR]|[dD][iI][pP][lL][oOô][mM][eE][\s]|[dD][iI][pP][lL][oOô][mM][aA]|[Bb][aA][cC][^a-zA-Z]|[Bb][aA][cC][^kKhH][^Oo]|[bB][aA][Cc][Hh][Ee][Ll][oO]|[iI][nN][gG][eÉEé][nN][iI][eE][rR][iI][eE][\s][eE][nN]|[Dd][uU][tT][\s]|[^a-zA-Z]?B\.?E[^a-zA-Z]|[Aa][sS][sS][oO][cC][iI][aA][tT][eE]|[Dd][oO][cC][tT][oO][rR]|M[\s\.]2') # DUT BTS master formation licence cycl cert bac diplome genie BE associat doctor 
+        matches1 = re.findall(pattern1, sentence)
+        return matches1
+
+    def remove_punctuation_and_special_chars_and_numbers(self,text):
+        # Using regular expression to remove all non-alphanumeric characters
+        text_without_chars = re.sub(r'[^A-Za-zéàÇ\s]', '', text)
+        
+        return text_without_chars
+
+    def extract_text_from_docx(docx_path):
+        doc = Document(docx_path)
+        text = ""
+        for paragraph in doc.paragraphs:
+            text += paragraph.text + "\n"
+        return text
+    def remove_punctuation_and_special_chars_and_numbers(text):
+        # Using regular expression to remove all non-alphanumeric characters
+        text_without_chars = re.sub(r'[^A-Za-zéàÇ\s]', '', text)
+        
+        return text_without_chars
+
+    
+    
+    def getTypleOfExperienceAndEducation(self,listOfsentences):
+        expBloc=False #it is active if the bloc is Experience bloc
+        eduBloc=False #it is active if it is an Education bloc
+        certBloc=False
+        listExperience=[]
+        listEducation=[]
+        for sentence in listOfsentences:
+
+            pattern = re.compile(r'E[\s]?[xX][\s]?[pP][\s]?[eEéÉ][\s]?[rR][\s]?[iI][\s]?[eE][\s]?[nN][\s]?[cC][\s]?[eE]|E[mM][pP][lL][oO][yY][Mm][eE][nN][tT]')
+            matches = re.findall(pattern, sentence)
+            if(len(matches)!=0):
+                expBloc=True
+                eduBloc=False
+                certBloc=False
+            pattern1 = re.compile(r'P[aA][rR][cC][oO][uU][rR][sS]?|D[iI][pP][lL][oO][mM][aA][sS]|[dD][eE][gG][rR][eE][eE]|F[\s]?[oO][\s]?[rR][\s]?[mM][\s]?[aA][\s]?[tT][\s]?[iI][\s]?[Oo][\s]?[Nn]|[EÉ][\s]?[dD][\s]?[uU][\s]?[cC][\s]?[aA][\s]?[tT][\s]?[iI][\s]?[oO][\s]?[nN]|[P][aA][rR][cC][oO][uU][rR][sS]?[\s]*[A][Cc][aA][dD][eE][mM][iI][qQ][uU][eE]|[D][iI][pP][lL][oOôÔ][Mm][eE][sS]|E[tT][uU][dD][eE][sS]|A[Cc][aA][dD][eE][mM][iI][Cc][sS]')
+            matches1 = re.findall(pattern1, sentence)
+            if(len(matches1)!=0):
+                expBloc=False
+                eduBloc=True
+                certBloc=False
+
+
+            
+
+            if(expBloc==True)and(self.is_empty_or_spaces(sentence)!=True):
+                listExperience.append(sentence)
+            if(eduBloc==True)and(self.is_empty_or_spaces(sentence)!=True):
+                listEducation.append(sentence)
+        listEducation=listEducation[1:]
+        listExperience=listExperience[1:]
+        typleOfEperiencesAndEducation=(listEducation,listExperience)
+        return typleOfEperiencesAndEducation
+    
+    def getListEduOrg(self,text):    
+        listOfsentences=text.split("\n")
+        #print(text)
+        typlesOfExperienceAndEducation=self.getTypleOfExperienceAndEducation(listOfsentences)
+        listEducation=typlesOfExperienceAndEducation[0]
+        listExperience=typlesOfExperienceAndEducation[1]
+        #print(listEducation)
+        #print(listExperience)
+        listEduDate=[] #registre all the date for the Education
+        listEduOrg=[] #list of the educationnal organization
+        for sentence in listEducation:
+            if(len(self.isdate(sentence))):
+                listEduDate.append(sentence)
+
+            if(len(self.isDiplomat(sentence))!=0):
+                listEduOrg.append(sentence)
+        return listEduOrg

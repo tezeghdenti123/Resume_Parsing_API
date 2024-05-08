@@ -1,11 +1,13 @@
 class Consultant:
-    def __init__(self, name, email,linkedIn,phoneNumber,languages, listSkills=None):
+    def __init__(self, name, email,linkedIn,phoneNumber,languages, listSkills=None,educationList=None,experienceList=None):
         self.name = name
         self.email = email
         self.linkedIn=linkedIn
         self.phoneNumber=phoneNumber
         self._languages = languages if languages else []
         self.listSkills = listSkills if listSkills else []
+        self.educationList=educationList
+        self.experienceList=experienceList
 
     def add_skill(self, skill):
         self.listSkills.append(skill)
@@ -52,6 +54,12 @@ class Consultant:
     def getPhoneNumber(self):
         return self.phoneNumber
     
+    def getEducationList(self):
+        return self.educationList
+    
+    def setEducationList(self,educationList):
+        self.educationList=educationList
+        
     def getListSkill(self):
         return self.listSkills
     

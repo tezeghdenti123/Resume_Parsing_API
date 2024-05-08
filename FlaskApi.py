@@ -1,4 +1,6 @@
 from flask import Flask,request,jsonify
+from flask_cors import CORS
+
 from Services.Service import Service
 from Models.Consultant import Consultant
 import os
@@ -8,8 +10,13 @@ from werkzeug.utils import secure_filename
 import nltk
 from nltk.corpus import stopwords
 from Models.Consultant import Consultant
+from pdfminer.high_level import extract_pages,extract_text
+from docx import Document
+import re
 
 app=Flask(__name__)
+CORS(app)  # This will enable CORS for all routes
+
 UPLOAD_FOLDER = 'static/files'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 

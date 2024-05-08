@@ -69,6 +69,7 @@ dynamodb
 eiffel
 elm
 embedded
+ethereum
 engine
 entity
 erlang
@@ -245,6 +246,7 @@ spring
 spring boot
 springboot
 sql
+saas
 sqlite
 stm32
 struts

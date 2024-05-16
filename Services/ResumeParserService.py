@@ -7,7 +7,10 @@ from werkzeug.utils import secure_filename
 import nltk
 from nltk.corpus import stopwords
 from Models.Consultant import Consultant
+from Models.Language import Language
 from pdfminer.high_level import extract_pages,extract_text
+from Models.Education import Education
+from Models.competence import Competence
 
 
 class Service:
@@ -62,12 +65,13 @@ class Service:
         listLanguage.append(matches)
         deutsh_pattern = re.compile(r'[aA][lL][lL][eE][mM][aA][nN][dD]|[dD][eE][uU][tT][sS][cC][hH]')
         matches = re.findall(deutsh_pattern, text)
+
         listLanguage.append(matches)
         
         return listLanguage
 
     def extract_linkedin_url(text):
-        linkedin_pattern = re.compile(r'https://www.linkedin\.com/in/[^ \n]*|linkedin\.com/in/[^ \n]*')
+        linkedin_pattern = re.compile(r'https://www.linkedin\.com/in/[^ \n]*|linkedin\.com/in/[^ \n]*|[Ww][Ww][Ww]\.[Ll][Ii][nN][Kk][eE][dD][iI][nN][^ \n]*')
         matches = linkedin_pattern.findall(text)
         
         if matches:
@@ -96,7 +100,7 @@ class Service:
         #print(words)
         #here we will read all the skills from the skillsdataset file and put them in a list
         
-        with open('/home/tezeghdentimohamed/Desktop/CVAPI/Services/SkillsDataSet', 'r+') as file:
+        with open('C:\\Users\\PC\\Desktop\\projetPFE\\Job-Matching-Api\\Services\\SkillsDataSet', 'r+') as file:
             # Read the entire content of the file
             content = file.read()
             predefinedSkills=content.split('\n')
@@ -114,12 +118,13 @@ class Service:
         skills=[]
         for word in lowerwords:
             if word in predefinedSkills:
-                skills.append(word)
+                skill=Competence(word)
+                skills.append(skill.__dict__)
 
-        return list(set(skills))
+        return skills
     def getSkillsFromDataBase(self):
         
-        with open('/home/tezeghdentimohamed/Desktop/CVAPI/Services/SkillsDataSet', 'r+') as file:
+        with open('C:\\Users\\PC\\Desktop\\projetPFE\\Job-Matching-Api\\Services\\SkillsDataSet', 'r+') as file:
             # Read the entire content of the file
             content = file.read()
             skillWords=content.split('\n')
@@ -131,17 +136,19 @@ class Service:
         email=Service.extractEmailFromText(text)
         if(email!=None)and(len(email)>0):
             email=email[0]
+        else:
+            email=""
         phoneNumber=Service.extract_phone_number(text)
         if(phoneNumber!=None):
             phoneNumber=phoneNumber[0]
         linkedIn=Service.extract_linkedin_url(text)
-        if(linkedIn!=None):
-            linkedIn=linkedIn[0]
+        
         languages=Service.extract_language(text)
         langList=[]
         for langue in languages:
             if(len(langue)!=0):
-                langList.append(langue[0])
+                lan=Language(langue[0])
+                langList.append(lan.__dict__)
         languages=langList
         service=Service()
         skillsList=service.extract_skills(text)
@@ -281,5 +288,6 @@ class Service:
                 listEduDate.append(sentence)
 
             if(len(self.isDiplomat(sentence))!=0):
-                listEduOrg.append(sentence)
+                eduction=Education(sentence,"","")
+                listEduOrg.append(eduction.__dict__)
         return listEduOrg

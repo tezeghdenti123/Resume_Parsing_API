@@ -2,12 +2,12 @@ import time
 class MySqlService:
     def getAllOpportunity(self,mysql):
         cur = mysql.connection.cursor()
-        cur.execute("SELECT * FROM opportunity")
+        cur.execute("SELECT * FROM opportunite")
         data = cur.fetchall()
         cur.close()
         return data
     def saveOpportunity(self,mysql,titre,desc,date,tjm,dure,location):
-        query = "INSERT INTO opportunity (titre, description,date,tjm,duree,location) VALUES (%s, %s,%s,%s,%s,%s)"
+        query = "INSERT INTO opportunite (titre, description,date,tjm,duree,location) VALUES (%s, %s,%s,%s,%s,%s)"
 
         try:
             # Execute the query
@@ -24,7 +24,7 @@ class MySqlService:
     def deleteAllOpportunity(self,mysql):
         try:
             # Create SQL DELETE query
-            query = "DELETE FROM opportunity"
+            query = "DELETE FROM opportunite"
 
             # Execute the query
             cur = mysql.connection.cursor()

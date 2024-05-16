@@ -69,7 +69,7 @@ def upload_file():
 @app.route('/scraper', methods=['POST'])
 def scraper():
     scrapingService=ScrapingService()
-    return scrapingService.getCleanedOpportunityList()
+    return scrapingService.getCleanedOpportunityList(mysql,app)
 
 @app.route('/test', methods=['GET'])
 def test():

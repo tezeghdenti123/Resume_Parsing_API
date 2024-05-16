@@ -4,7 +4,7 @@ class Consultant:
         self.email = email
         self.linkedIn=linkedIn
         self.phoneNumber=phoneNumber
-        self._languages = languages if languages else []
+        self.languages = languages if languages else []
         self.listSkills = listSkills if listSkills else []
         self.educationList=educationList
         self.experienceList=experienceList
@@ -16,19 +16,16 @@ class Consultant:
         self.name=name
     
     @property
-    def languages(self):
-        return self._languages
+    def getlanguages(self):
+        return self.languages
 
-    @languages.setter
-    def languages(self, new_languages):
-        self._languages = new_languages
     
     def add_language(self, language):
-        self._languages.append(language)
+        self.languages.append(language)
 
     def remove_language(self, language):
-        if language in self._languages:
-            self._languages.remove(language)
+        if language in self.languages:
+            self.languages.remove(language)
         else:
             print(f"{self._name} does not have the language {language}.")
     

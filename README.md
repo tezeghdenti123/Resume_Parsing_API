@@ -9,8 +9,8 @@ This Flask API is designed to extract relevant information from resumes and retu
 
 ## Prerequisites
 - Python 3.x
-- Flask
-- spacy
+- mysql
+- 
 - 
 
 ## Setup
@@ -22,3 +22,10 @@ This Flask API is designed to extract relevant information from resumes and retu
    pip install flair
    pip install pdfminer
    set the path for the file 'SkillDataSet'
+   !pip install selenium
+   !pip install dateparser #new 
+   !pip install translate #new
+   !pip install schedule
+   pip install flask-mysql
+
+

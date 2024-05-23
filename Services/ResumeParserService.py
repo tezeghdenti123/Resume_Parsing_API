@@ -100,7 +100,7 @@ class Service:
         #print(words)
         #here we will read all the skills from the skillsdataset file and put them in a list
         
-        with open('C:\\Users\\PC\\Desktop\\projetPFE\\Job-Matching-Api\\Services\\SkillsDataSet', 'r+') as file:
+        with open('/home/tezeghdentimohamed/Desktop/FullProject/Job-Matching-Api/Services/SkillsDataSet', 'r+') as file:
             # Read the entire content of the file
             content = file.read()
             predefinedSkills=content.split('\n')
@@ -115,16 +115,18 @@ class Service:
         lowerwords=lowerwords+combinedWords
         ##print(words)
         ##here from words we want to extract the skills
-        skills=[]
+        skills=set()
         for word in lowerwords:
             if word in predefinedSkills:
-                skill=Competence(word)
-                skills.append(skill.__dict__)
-
-        return skills
+                skills.add(word)
+        listSkills=[]
+        for word in skills:
+            skill=Competence(word)
+            listSkills.append(skill.__dict__)
+        return listSkills
     def getSkillsFromDataBase(self):
         
-        with open('C:\\Users\\PC\\Desktop\\projetPFE\\Job-Matching-Api\\Services\\SkillsDataSet', 'r+') as file:
+        with open('/home/tezeghdentimohamed/Desktop/FullProject/Job-Matching-Api/Services/SkillsDataSet', 'r+') as file:
             # Read the entire content of the file
             content = file.read()
             skillWords=content.split('\n')

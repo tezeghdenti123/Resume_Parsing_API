@@ -107,11 +107,15 @@ class ScrapingService:
                 auxList.append(aux[1])
                 auxList.append(aux[2])
                 auxList.append(locations_list[i])
-                opportunite=Opportunite(auxList[0],auxList[1],auxList[2],auxList[3],auxList[4],auxList[5])
                 tjm=int(self.extract_numbers(auxList[3]))
+                opportunite=Opportunite(auxList[0],auxList[1],auxList[2],tjm,auxList[4],auxList[5])
                 
-                mysqlService.saveOpportunity(mysql,auxList[0],auxList[1],auxList[2],tjm,auxList[4],auxList[5])
+                mysqlService.saveOpportunity(mysql,auxList[0],auxList[1],auxList[2],tjm,auxList[4],self.processLocation(auxList[5]))
+                
                 table.append(opportunite.__dict__)
+            medtjm=mysqlService.getTjmMediane(mysql)
+            mysqlService.saveTjmMediane(mysql,float(medtjm[0][0]))
+            print(float(medtjm[0][0]))
             return jsonify(table)
         '''with app.app_context():
             print("run")
@@ -133,4 +137,12 @@ class ScrapingService:
         result = ''.join(numbers)
         return result
     
+    def processLocation(self,input):
+        # Regular expression pattern to match "(number)" at the end of the string
+        pattern = r'\s*\(\d+\)$'
+        
+        # Substitute the matched pattern with an empty string
+        result = re.sub(pattern, '', input)
+        
+        return result
    

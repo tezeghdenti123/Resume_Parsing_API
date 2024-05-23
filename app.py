@@ -25,7 +25,7 @@ def createApp():
 def createMysqlInstance(app):
     app.config['MYSQL_HOST'] = 'localhost'
     app.config['MYSQL_USER'] = 'root'
-    app.config['MYSQL_PASSWORD'] = 'khouloud'
+    app.config['MYSQL_PASSWORD'] = 'Mohamed2019$'
     app.config['MYSQL_DB'] = 'crudapi'
 
     return MySQL(app)

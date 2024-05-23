@@ -14,10 +14,3 @@ class Education:
   
 
     # Getter and Setter for end
-    @property
-    def end(self):
-        return self._end
-
-    @end.setter
-    def end(self, value):
-        self._end = value

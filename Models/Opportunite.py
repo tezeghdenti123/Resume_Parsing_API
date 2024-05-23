@@ -2,9 +2,9 @@ class Opportunite:
     def __init__(self, titre,description,dateDeposition,tjm,durée,location):
         self.titre = titre
         self.description=description
-        self.dateDeposition=dateDeposition
+        self.date=dateDeposition
         self.tjm=tjm
-        self.durée=durée
+        self.duree=durée
         self.location=location
     @property
     def titre(self):
@@ -22,13 +22,6 @@ class Opportunite:
     def description(self, value):
         self._description = value
     
-    @property
-    def dateDeposition(self):
-        return self._deposition
-
-    @dateDeposition.setter
-    def dateDeposition(self, value):
-        self._dateDeposition = value
     
     @property
     def tjm(self):
@@ -38,13 +31,7 @@ class Opportunite:
     def tjm(self, value):
         self._tjm = value
 
-    @property
-    def durée(self):
-        return self._durée
-
-    @durée.setter
-    def durée(self, value):
-        self._durée = value
+  
     
     @property
     def location(self):

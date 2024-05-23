@@ -3,6 +3,7 @@ from Services.ScrapingService import ScrapingService
 from Services.ResumeParserService import Service
 from Services.MySqlService import MySqlService
 from Services.RecommendationService import RecommendationService
+from Services.StatisticService import StatisticService
 from flair.models import SequenceTagger
 from werkzeug.utils import secure_filename
 import nltk
@@ -34,7 +35,7 @@ def invoke_once():
 
         print("Number of active threads:", num_threads)
         endpoint_invoked = True
-        return 'Endpoint invoked successfully', 200
+        return 'Scraper invoked successfully', 200
     else:
         # If the endpoint has already been invoked, return an error message
         return 'Endpoint already invoked', 400
@@ -81,6 +82,13 @@ def test():
     data=recommendationService.getOpportunityList(mysql)
     return str(data)
 
+@app.route('/statistic', methods=['GET'])
+def getStatistic():
+    
+    statisticService=StatisticService()
+    data=statisticService.getStatistic(mysql)
+    return data
+
 @app.route('/recommendation', methods=['POST'])
 def getRecommendations():
     if request.method == 'POST':
@@ -95,6 +103,17 @@ def getRecommendations():
         return data, 200
     else:
         return jsonify({'error': 'Method not allowed'}), 405
+    
+@app.route('/test', methods=['POST'])
+def Test():
+    if request.method == 'POST':
+        # Assuming the object is sent as JSON data
+        statisticService=StatisticService()
+        statisticService.Test(mysql)
+        return "Ok",200
+    else:
+        return jsonify({'error': 'Method not allowed'}), 405
+
 
 if __name__ == "__main__":
 

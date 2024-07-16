@@ -22,11 +22,11 @@ def createApp():
     app.config['SQLALCHEMY_DATABASE_URI'] = ':///User.mysql'
     return app
 
-def createMysqlInstance(app):
+def createMysqlInstanceScrapping(app):
     app.config['MYSQL_HOST'] = 'localhost'
     app.config['MYSQL_USER'] = 'root'
     app.config['MYSQL_PASSWORD'] = 'Mohamed2019$'
-    app.config['MYSQL_DB'] = 'crudapi'
+    app.config['MYSQL_DB'] = 'scrapingDatabase'
 
     return MySQL(app)
 

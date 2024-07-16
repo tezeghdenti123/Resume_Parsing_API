@@ -5,18 +5,36 @@ from Services.MySqlService import MySqlService
 from Services.RecommendationService import RecommendationService
 from Services.StatisticService import StatisticService
 from flair.models import SequenceTagger
+from Services.CandidateDBService import CandidateDBService
+from Services.CandidateRecommendationService import CandidateRecommendationService
 from werkzeug.utils import secure_filename
 import nltk
 from nltk.corpus import stopwords
-from app import createApp,createMysqlInstance,startScrapingTask,getTagger
+from app import createApp,createMysqlInstanceScrapping,startScrapingTask,getTagger
 import threading
+from io import BytesIO
+import logging
+import tempfile
+from ultralytics import YOLO
+from pdf2image import convert_from_path
+from paddleocr import PaddleOCR, draw_ocr
+import os
+
 
 app=createApp()
-mysql=createMysqlInstance(app)
+mysql=createMysqlInstanceScrapping(app)
 nltk.download('stopwords')
 nltk.download('punkt')
 tagger=SequenceTagger.load("flair/ner-french")
+base_dir = os.path.dirname(os.path.abspath(__file__))
 
+# Construct the absolute path to best5.pt
+model_path = os.path.join(base_dir, 'best5.pt')
+# Load the YOLO model
+model = YOLO(model_path)
+
+# Initialize the PaddleOCR reader
+ocr = PaddleOCR(use_angle_cls=True, lang='en')
 @app.route("/")
 def home():
     return "Home"
@@ -61,6 +79,7 @@ def upload_file():
         # In this example, we'll just return a success message
         
         file_path=Service.saveFile(file,app.config['UPLOAD_FOLDER'])
+        
         text=Service.extract_content(file_path)
         consultant=Service.ResumeToConsultant(text,tagger)
         return jsonify(consultant.__dict__)
@@ -103,7 +122,65 @@ def getRecommendations():
         return data, 200
     else:
         return jsonify({'error': 'Method not allowed'}), 405
+
+
+
+@app.route('/saveCandidate', methods=['POST'])
+def save_candidate():
+    # Get the JSON data from the request
+    name = request.form.get('name')
+    email = request.form.get('email')
+    phone = request.form.get('phone')
+    title=request.form.get('title')
+    offreId=int(request.form.get('offreId'))
+    cover_letter = request.form.get('coverLetter')
+    cv_file = request.files.get('cvFile')
     
+    if not all([name, email, phone, cover_letter, cv_file]):
+        return jsonify({"error": "Missing required fields"}), 400
+
+    
+    candidateDBService=CandidateDBService()
+    
+    # Insert the candidate profile into the collection
+    result = candidateDBService.store_candidate_profile(name,email,phone,title,cover_letter,offreId,cv_file)
+    '''return jsonify({"message": "Candidate profile saved", "id": str(result.inserted_id)}), 201'''
+    return jsonify({"message": "Candidate profile saved"}), 201
+
+
+@app.route('/getCandidates', methods=['GET'])
+def get_candidates():
+    # Get the optional offre_id parameter
+    offre_id = request.args.get('offreId')
+    candidateDBService=CandidateDBService()
+    candidateRecommendationService=CandidateRecommendationService()
+    # If offre_id is provided, filter by it
+    if offre_id:
+        candidates_list =candidateDBService.get_candidate_profile(int(offre_id))
+        #return jsonify(candidates_list), 200
+        text=candidateRecommendationService.candidateListToDataFrame(candidates_list,tagger)
+        return str(text), 200
+    
+    if not candidates_list:
+        return jsonify({"error": "No candidates found"}), 404
+
+    return jsonify(candidates_list), 200
+    
+@app.route('/getCandidatesRec', methods=['GET'])
+def get_candidates_rec():
+    # Get the optional offre_id parameter
+    offre= request.get_json()
+
+    candidateDBService=CandidateDBService()
+    candidateRecommendationService=CandidateRecommendationService()
+    # If offre_id is provided, filter by it
+    text=candidateRecommendationService.getRecommendationOpportunity(offre,tagger)
+    
+   
+    return str(text), 200
+
+    
+
 @app.route('/test', methods=['POST'])
 def Test():
     if request.method == 'POST':

@@ -1,9 +1,7 @@
 class Experience:
-    def __init__(self, title,organisation,start,end):
+    def __init__(self, title,organisation):
         self.title = title
-        self.organisation=organisation
-        self.start=start
-        self.end=end
+        self.company=organisation
         
     # Getter and Setter for title
     @property
@@ -14,14 +12,6 @@ class Experience:
     def title(self, value):
         self._title = value
 
-    # Getter and Setter for organisation
-    @property
-    def organisation(self):
-        return self._organisation
-
-    @organisation.setter
-    def organisation(self, value):
-        self._organisation = value
 
     # Getter and Setter for start
     @property
@@ -32,11 +22,3 @@ class Experience:
     def start(self, value):
         self._start = value
 
-    # Getter and Setter for end
-    @property
-    def end(self):
-        return self._end
-
-    @end.setter
-    def end(self, value):
-        self._end = value

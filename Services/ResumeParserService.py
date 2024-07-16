@@ -11,7 +11,9 @@ from Models.Language import Language
 from pdfminer.high_level import extract_pages,extract_text
 from Models.Education import Education
 from Models.competence import Competence
-
+from Services.ExperienceExtractService import ExperienceExtractService
+from ultralytics import YOLO
+from pdf2image import convert_from_path
 
 class Service:
     
@@ -54,17 +56,50 @@ class Service:
 
     def extract_language(text):
         listLanguage=[]
-        arabe_pattern = re.compile(r'[aA][rR][aA][bB][eE]')
+        arabe_pattern = re.compile(r'(?:^|[^A-Za-z])[aA][rR][aA][bB][eE](?:^|[^A-Za-z])|(?:^|[^A-Za-z])[aA][rR][aA][bB][iI][cC](?:^|[^A-Za-z])')
         matches = re.findall(arabe_pattern, text)
         listLanguage.append(matches)
-        french_pattern = re.compile(r'[fF][rR][aA][nN][cCç][aA][iI][sS]|[fF][rR][eE][nN][cC][hH]')
+        french_pattern = re.compile(r'(?:^|[^A-Za-z])[fF][rR][aA][nN][cCç][aA][iI][sS](?:^|[^A-Za-z])|(?:^|[^A-Za-z])[fF][rR][eE][nN][cC][hH](?:^|[^A-Za-z])')
         matches = re.findall(french_pattern, text)
         listLanguage.append(matches)
-        english_pattern = re.compile(r'[aA][nN][gG][lL][aA][iI][sS]|[eE][nN][gG][lL][iI][sS][hH]')
+        english_pattern = re.compile(r'(?:^|[^A-Za-z])[aA][nN][gG][lL][aA][iI][sS](?:^|[^A-Za-z])|(?:^|[^A-Za-z])[eE][nN][gG][lL][iI][sS][hH](?:^|[^A-Za-z])')
         matches = re.findall(english_pattern, text)
         listLanguage.append(matches)
-        deutsh_pattern = re.compile(r'[aA][lL][lL][eE][mM][aA][nN][dD]|[dD][eE][uU][tT][sS][cC][hH]')
+        deutsh_pattern = re.compile(r'(?:^|[^A-Za-z])[aA][lL][lL][eE][mM][aA][nN][dD](?:^|[^A-Za-z])|(?:^|[^A-Za-z])[dD][eE][uU][tT][sS][cC][hH](?:^|[^A-Za-z])')
         matches = re.findall(deutsh_pattern, text)
+
+        listLanguage.append(matches)
+        ukranian_pattern = re.compile(r'(?:^|[^A-Za-z])[Uu][kK][rR][aA][iI][nN][iI][aA][nN](?:^|[^A-Za-z])')
+        matches = re.findall(ukranian_pattern, text)
+
+        listLanguage.append(matches)
+
+        Svenka_pattern = re.compile(r'(?:^|[^A-Za-z])[Ss][Vv][eE][nN][sS][kK][aA](?:^|[^A-Za-z])')
+        matches = re.findall(Svenka_pattern, text)
+
+        listLanguage.append(matches)
+        
+        espaniol_pattern = re.compile(r'(?:^|[^A-Za-z])[eE][sS][pP][aA][nNñ][oO][lL](?:^|[^A-Za-z])|(?:^|[^A-Za-z])[sS][pP][aA][nN][iI][sS][hH](?:^|[^A-Za-z])')
+        matches = re.findall(espaniol_pattern, text)
+
+        listLanguage.append(matches)
+
+        espaniol_pattern = re.compile(r'(?:^|[^A-Za-z])[Rr][uU][sS][sS][iI][aA][nN](?:^|[^A-Za-z])|(?:^|[^A-Za-z])[sS][pP][aA][nN][iI][sS][hH](?:^|[^A-Za-z])')
+        matches = re.findall(espaniol_pattern, text)
+
+        listLanguage.append(matches)
+        chinois_pattern = re.compile(r'(?:^|[^A-Za-z])[cC][hH][iI][nN][Oo][iI][sS](?:^|[^A-Za-z])')
+        matches = re.findall(chinois_pattern, text)
+
+        listLanguage.append(matches)
+        italian_pattern = re.compile(r'(?:^|[^A-Za-z])[iI][tT][aA][lL][iI][aA][nN](?:^|[^A-Za-z])')
+        matches = re.findall(italian_pattern, text)
+        
+
+        listLanguage.append(matches)
+
+        Latin_pattern = re.compile(r'[\s][Ll][aA][tT][iI][nN][\s]')
+        matches = re.findall(Latin_pattern, text)
 
         listLanguage.append(matches)
         
@@ -150,13 +185,16 @@ class Service:
         for langue in languages:
             if(len(langue)!=0):
                 lan=Language(langue[0])
-                langList.append(lan.__dict__)
+                langList.append(lan.__dict__) 
         languages=langList
         service=Service()
         skillsList=service.extract_skills(text)
         name=service.extract_name(text,tagger)
         educationList=service.getListEduOrg(text)
-        consultant=Consultant(name,email ,linkedIn,phoneNumber,languages,skillsList,educationList,[])
+        experienceservice=ExperienceExtractService()
+        #experienceList=experienceservice.getListExperience(text)
+        
+        consultant=Consultant(name,"hhhhhh",email ,linkedIn,phoneNumber,languages,skillsList,educationList,[])
         return consultant
     
     def contains_only_alphabetic_and_spaces(self,sentence):

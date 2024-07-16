@@ -7,29 +7,37 @@ alice
 amazon
 architecture distribuée
 jee
-analysis
 angular
 ansible
 android
+android jetpack
+android sdk
 revue de code
 apache
+audits
 api
 architecture logicielle
 arduino
 artificial intelligence
+arcore
+assembleurs
 asp.net
 assembly
 aurora
 autocad
+amoa
+ace
 balancing
+backend
 bash
-basic
 be
 beego
 bi
 bitbucket
 block
 building
+business analyst
+business analysis
 c
 c#
 c++
@@ -48,22 +56,27 @@ computing
 concretecms
 couchdb
 csharpe
+cybersécurité
+cryptologie
 css
 d3.js
 dart
-data
 data science
+data analysis
 database
 développement backend
 db2
 deep learning
-development
 devops
+devsecops
+deciduim adp
+delphi
 dhcp
 django
 dns
 docker
 dom
+dsn
 dylan
 dynamodb
 eiffel
@@ -73,45 +86,52 @@ ethereum
 engine
 entity
 erlang
+erp
+easyphp
 euphoria
 express
 express.js
 expressjs
-f#
+excel
 fantom
 fastapi
 firebase
 flask
 flutter
 fpga
+full stack
+full-stac
 front-end
+fonctionnel
 gimp
 gin
 git
 github
 gitlab
 go
-google
 gradle
 groovy
+geogebra
 hack
 hadoop
+hra
 hana
 haskell
 hbase
 hibernate
 hopscotch
 html
+hilt
 ia
 iaas
 revue de code
 idl
 illustrator
-in-memory
 indesign
 intelligence artificielle
 interfaces
 intégration continue
+informatique de gestion
 ios
 ios/macos
 iot
@@ -142,16 +162,18 @@ lisp
 load
 logo
 lstm
+lsprh
 lua
+lan
 mac
 machine
 machine learning
-mapping
 mariadb
 matlab
 matplotlib
 maven
 mel
+moa
 memcached
 metasploit
 microsoft
@@ -160,6 +182,7 @@ mongodb
 mql4/mql5
 mumps
 mysql
+mvvm
 ner
 nest.js
 next.js
@@ -171,13 +194,14 @@ nmap
 node
 node.js
 nodejs
+nosql
 numpy
+networks
 oberon
 object-relational
 objective-c
 objective-j
 octave
-on
 open source
 opencl
 opencv
@@ -201,6 +225,12 @@ protocols
 pyramid
 python
 pytorch
+paie
+pentest
+pam
+php4
+php5
+phpunit
 query
 r
 racket
@@ -222,6 +252,8 @@ riak
 rpg
 ruby
 runtime
+regressi
+réseau
 rust
 saas
 sap
@@ -234,7 +266,7 @@ scripting
 scrum
 seaborn
 selenium
-servlet
+sécurité
 shell
 sinatra
 smalltalk
@@ -245,17 +277,20 @@ spark
 spring
 spring boot
 springboot
+spss
 sql
 saas
 sqlite
 stm32
 struts
+sirh
 swift
+siebel
 swiftui
 symfony
-system d'exploitation
+system d exploitation
 systems
-tableau
+sybase
 tailwind
 tcl
 tcp/ip
@@ -263,8 +298,11 @@ tensorflow
 terraform
 test automatisé
 testng
+télécommunications
 tomcat
 turing
+twig
+tfs
 typescript
 uart
 ui
@@ -274,25 +312,29 @@ unity
 unix
 unreal
 unrealscript
-used
-user
 vala
 verilog
 vhdl
-visual
+visual studio
+vs code
 voltdb
 vpn
+vlan
 vue.js
-web
 wifi
 win32
 windows
 wireshark
 wolfram
 wordpress
+wan
+word
 x86
 xamarin
 xml
 xojo
 xquery
 xsl
+xampp
+zadig
+.net

@@ -1,5 +1,5 @@
 class Consultant:
-    def __init__(self, name, email,linkedIn,phoneNumber,languages, listSkills=None,educationList=None,experienceList=None):
+    def __init__(self,name,title, email,linkedIn,phoneNumber,languages, listSkills=None,educationList=None,experienceList=None):
         self.name = name
         self.email = email
         self.linkedIn=linkedIn
@@ -8,6 +8,8 @@ class Consultant:
         self.listSkills = listSkills if listSkills else []
         self.educationList=educationList
         self.experienceList=experienceList
+        self.title=title
+
 
     def add_skill(self, skill):
         self.listSkills.append(skill)
@@ -57,6 +59,10 @@ class Consultant:
     def setEducationList(self,educationList):
         self.educationList=educationList
         
+    def getExperienceList(self):
+        return self.experienceList
+    
+    
     def getListSkill(self):
         return self.listSkills
     
@@ -73,3 +79,9 @@ class Consultant:
         print(f"Name: {self.name}")
         print(f"Email: {self.email}")
         print("Skills:", ', '.join(self.listSkills))
+    
+    def getTitle(self):
+        return self.title
+    
+    def setTitle(self,title):
+        self.title=title
